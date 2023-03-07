@@ -136,13 +136,37 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the authenticated User
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     * path="/api/user",
+     * summary="Get Auth User",
+     * description="Get the authenticated User",
+     * operationId="authUser",
+     * tags={"auth"},
+     * security={ {"bearer": {} }},
+     * @OA\Response(
+     *    response=401,
+     *    description="error",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Unauthenticated")
+     *     )
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Success",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Successfully data retrieved"),
+     *       @OA\Property(property="data", type="object", ref="#/components/schemas/User"
+     *      ),
+     *    )
+     * )
+     *)
      */
     public function me()
     {
-        return response()->json($this->guard()->user());
+        return response()->json([
+            'message' => "Successfully data retrieved",
+            'data' => $this->guard()->user(),
+        ], 200);
     }
 
     /**
