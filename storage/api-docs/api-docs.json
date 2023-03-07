@@ -1,17 +1,26 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Your super  ApplicationAPI",
+        "title": "Blog App API Documentation",
+        "contact": {
+            "name": "H M Mohidul Islam",
+            "email": "mohidul@du.ac.bd"
+        },
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000"
+        }
+    ],
     "paths": {
-        "/login": {
+        "/api/login": {
             "post": {
                 "tags": [
                     "auth"
                 ],
-                "summary": "Sign in",
-                "description": "Login by email, password",
+                "summary": "Log in",
+                "description": "Get a JWT token via given credentials",
                 "operationId": "authLogin",
                 "requestBody": {
                     "description": "Pass user credentials",
@@ -27,12 +36,12 @@
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "user1@mail.com"
+                                        "example": "mohidul@du.ac.bd"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "PassWord12345"
+                                        "example": "123456"
                                     }
                                 },
                                 "type": "object"
@@ -63,12 +72,22 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Sorry, wrong email address or password. Please try again"
-                                        },
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
+                                        "data": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "xxx.yyy.zzz"
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "bearer"
+                                                },
+                                                "expires_in": {
+                                                    "type": "number",
+                                                    "example": "3600"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -78,14 +97,60 @@
                     }
                 }
             }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Logout",
+                "description": "Log the user out (Invalidate the token)",
+                "operationId": "authLogout",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully logged out"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not authorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
             "User": {
-                "required": [
-                    "password"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -95,14 +160,14 @@
                     "name": {
                         "type": "string",
                         "maxLength": 32,
-                        "example": "John"
+                        "example": "Mohidul"
                     },
                     "email": {
                         "description": "User unique email address",
                         "type": "string",
                         "format": "email",
                         "readOnly": "true",
-                        "example": "user@gmail.com"
+                        "example": "mohidul@du.ac.bd"
                     },
                     "email_verified_at": {
                         "description": "Datetime marker of verification status",
@@ -110,6 +175,18 @@
                         "format": "date-time",
                         "readOnly": "true",
                         "example": "2019-02-25 12:59:20"
+                    },
+                    "created_at": {
+                        "description": "Initial creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
                     }
                 },
                 "type": "object",

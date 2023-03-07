@@ -8,38 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-/**
- * @OA\Post(
- * path="/login",
- * summary="Sign in",
- * description="Login by email, password",
- * operationId="authLogin",
- * tags={"auth"},
- * @OA\RequestBody(
- *    required=true,
- *    description="Pass user credentials",
- *    @OA\JsonContent(
- *       required={"email","password"},
- *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
- *       @OA\Property(property="password", type="string", format="password", example="PassWord12345"),
- *    ),
- * ),
- * @OA\Response(
- *    response=401,
- *    description="error",
- *    @OA\JsonContent(
- *       @OA\Property(property="message", type="string", example="Wrong credentials")
- *     )
- * ),
- * @OA\Response(
- *    response=200,
- *    description="Success",
- *    @OA\JsonContent(
- *       @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
- *    )
- * )
- *)
- */
 class AuthController extends Controller
 {
     /**
@@ -71,11 +39,40 @@ class AuthController extends Controller
     }
 
     /**
-     * Get a JWT token via given credentials.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     * path="/api/login",
+     * summary="Log in",
+     * description="Get a JWT token via given credentials",
+     * operationId="authLogin",
+     * tags={"auth"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Pass user credentials",
+     *    @OA\JsonContent(
+     *       required={"email","password"},
+     *       @OA\Property(property="email", type="string", format="email", example="mohidul@du.ac.bd"),
+     *       @OA\Property(property="password", type="string", format="password", example="123456"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=401,
+     *    description="error",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Wrong credentials")
+     *     )
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Success",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="data", type="object", 
+     *          @OA\Property(property="access_token", type="string", example="xxx.yyy.zzz"),
+     *          @OA\Property(property="token_type", type="string", example="bearer"),
+     *          @OA\Property(property="expires_in", type="number", example="3600"),
+     *      ),
+     *    )
+     * )
+     *)
      */
     public function login(Request $request)
     {
@@ -99,9 +96,28 @@ class AuthController extends Controller
     }
 
     /**
-     * Log the user out (Invalidate the token)
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     * path="/api/logout",
+     * summary="Logout",
+     * description="Log the user out (Invalidate the token)",
+     * operationId="authLogout",
+     * tags={"auth"},
+     * security={ {"bearer": {} }},
+     * @OA\Response(
+     *    response=200,
+     *    description="Success",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Successfully logged out")
+     *     )
+     *     ),
+     * @OA\Response(
+     *    response=401,
+     *    description="error",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Not authorized"),
+     *    )
+     * )
+     * )
      */
     public function logout()
     {
