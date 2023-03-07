@@ -25,13 +25,20 @@ use Illuminate\Support\Facades\Validator;
  *    ),
  * ),
  * @OA\Response(
- *    response=422,
- *    description="Wrong credentials response",
+ *    response=401,
+ *    description="error",
  *    @OA\JsonContent(
- *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
- *        )
+ *       @OA\Property(property="message", type="string", example="Wrong credentials")
  *     )
+ * ),
+ * @OA\Response(
+ *    response=200,
+ *    description="Success",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
+ *    )
  * )
+ *)
  */
 class AuthController extends Controller
 {

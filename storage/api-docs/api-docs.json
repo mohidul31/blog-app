@@ -41,8 +41,24 @@
                     }
                 },
                 "responses": {
-                    "422": {
-                        "description": "Wrong credentials response",
+                    "401": {
+                        "description": "error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Wrong credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -50,6 +66,9 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Sorry, wrong email address or password. Please try again"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
                                         }
                                     },
                                     "type": "object"
