@@ -11,23 +11,73 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     /**
-     * Handle an incoming registration request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * @OA\Post(
+     * path="/api/register",
+     * summary="Registration",
+     * description="Register New User",
+     * operationId="authRegister",
+     * tags={"auth"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Basic Registration Data",
+     *    @OA\JsonContent(
+     *       required={"email","password"},
+     *       @OA\Property(property="name", type="string", format="text", example="Mohidul Islam"),
+     *       @OA\Property(property="email", type="string", format="email", example="mohidul@du.ac.bd"),
+     *       @OA\Property(property="password", type="string", format="password", example="123456"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *     response=422,
+     *     description="Validation error",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *        @OA\Property(
+     *           property="errors",
+     *           type="object",
+     *           @OA\Property(
+     *              property="name",
+     *              type="array",
+     *              collectionFormat="multi",
+     *              @OA\Items(
+     *                 type="string",
+     *                 example={"The name field is required."},
+     *              )
+     *           ),
+     *           @OA\Property(
+     *              property="email",
+     *              type="array",
+     *              collectionFormat="multi",
+     *              @OA\Items(
+     *                 type="string",
+     *                 example={"The email field is required.","The email must be a valid email address."},
+     *              )
+     *           )
+     *        )
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Success",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Successfully Registered, Please Login Now")
+     *    )
+     * )
+     *)
      */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name'     => 'string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'min:6'],
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->messages(), 422);
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors'  => $validator->messages(),
+            ], 422);
         }
 
         $user = new User();
